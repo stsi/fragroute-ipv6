@@ -1,0 +1,4 @@
+ip_frag 8
+order random
+dup last 100
+print

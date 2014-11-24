@@ -1,0 +1,50 @@
+.\"
+.\" Copyright (c) 2002 Dug Song <dugsong@monkey.org>
+.\"
+.\" $Id: fragtest.8,v 1.2 2002/02/24 04:41:44 dugsong Exp $
+.\"
+.TH FRAGTEST 8
+.SH NAME
+fragtest \- test IP fragment reassembly behaviour
+.SH SYNOPSIS
+.BI fragtest " TESTS ... host"
+.SH DESCRIPTION
+.B fragtest
+probes the remote
+.I host
+to determine its TCP/IP stack behaviour.
+.LP
+The 
+.I TESTS
+may include any of the following (or may be specified as
+.B all
+to perform them all):
+.TP
+.B ping
+Send an ICMP echo request to the host.
+.TP
+.B ip-opt
+Send ICMP echo requests with different IP options, to see which IP
+options are supported.
+.TP
+.B frag
+Send an ICMP echo request as 8-byte fragments.
+.TP
+.B frag-new
+Send an ICMP echo request as 8-byte fragments with an overlapping
+16-byte fragment, favoring newer data in reassembly.
+.TP
+.B frag-old
+Send an ICMP echo request as 8-byte fragments with an overlapping
+16-byte fragment, favoring older data in reassembly.
+.TP
+.B frag-timeout
+Send an ICMP echo request as 8-byte fragments, omitting the last
+fragment, and wait for an ICMP time-exceeded-in-reassembly reply.
+.SH "SEE ALSO"
+.BR fragroute (8)
+.SH AUTHOR
+Dug Song <dugsong@monkey.org>
+.SH BUGS
+Firewalls or other filtering network devices may block IP fragments,
+packets with IP options, ICMP echo traffic, etc.

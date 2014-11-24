@@ -1,0 +1,23 @@
+
+fragroute
+---------
+
+fragroute intercepts, modifies, and rewrites egress traffic destined
+for a specified host, implementing most of the attacks described in
+the Secure Networks "Insertion, Evasion, and Denial of Service:
+Eluding Network Intrusion Detection" paper of January 1998.
+
+required libraries / drivers:
+
+libdnet:	http://libdnet.sourceforge.net/
+libpcap:	http://www.tcpdump.org/
+libevent:	http://www.monkey.org/~provos/libevent/ (for non-Win2k only)
+TUN/TAP:	http://vtun.sourceforge.net/tun/  (for Solaris only)
+CIPE-win32:	http://cipe-win32.sourceforge.net/ (for Win2k only)
+
+built and tested on OpenBSD, FreeBSD, Linux, Solaris, and Windows 2000. YMMV.
+
+NOTE: TCP-based attacks do not work on Windows 2000, which resets
+asymmetrically-routed TCP connections. any ideas? :-/
+
+$Id: README,v 1.6 2002/04/15 13:53:03 dugsong Exp $

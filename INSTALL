@@ -1,0 +1,45 @@
+
+BSD & Linux
+-----------
+
+1. All set!
+
+
+Windows 2000
+------------
+
+Install the CIPE-Win32 VPN Adapter:
+
+1. download from http://cipe-win32.sourceforge.net/ and unzip
+   somewhere (e.g. C:\temp\CIPE-Win32)
+
+2. go to Start -> Settings -> Control Panel
+
+3. open "Add/Remove Hardware", click Next
+
+4. select "Add/Troubleshoot a device", click Next
+
+5. wait for search of new hardware to finish, 
+   select "Add a new device" from list, click Next
+
+6. select "No, I want to select the hardware from a list", click Next
+
+7. select "Network Adapters" from list, click Next
+
+8. click "Have Disk...", browse to the unzipped CIPE-Win32 disk1
+   directory from above (e.g. C:\temp\CIPE-Win32\disk1), click Ok
+
+9. "CIPE VPN Adapter" should appear, click Next, Next, Yes, Finish
+
+
+Solaris
+-------
+
+Install the Universal TUN/TAP driver:
+
+1. download the package for Solaris x86 from http://vtun.sourceforge.net/
+   or for Solaris sparc64 from http://www.monkey.org/~dugsong/fragroute/
+   and gunzip somewhere (e.g. /tmp/tun-1.1-sol80.sparc64)
+
+2. as root, install package (e.g. pkgadd -d /tmp/tun-1.1-sol80.sparc64)
+

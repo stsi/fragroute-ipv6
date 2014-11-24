@@ -1,0 +1,54 @@
+
+attacks against snort-1.8.3, reported Jan 28, 2002:
+
+1. older TCP retransmission chaff (snort's TCP segment reassembly
+   seems to always favor newer data, even for properly sequenced
+   received data):
+
+	tcp_seg 1
+	tcp_chaff rexmit
+	order random
+
+2. forward TCP segmentation overlap, favoring newer data (both Windows
+   and Unix operate this way, in contrast to Ptacek and Newsham's
+   results):
+
+	tcp_seg 1 new
+
+3. chaff TCP segments with older TCP timestamp options forcing PAWS
+   elimination:
+
+	tcp_seg 1
+	tcp_chaff paws
+	order random
+
+4. older IP fragment duplicates (snort's IP fragment reassembly seems
+   to always favor newer data, even for properly sequenced received
+   data):
+
+	ip_frag 8
+	ip_chaff dup
+	order random
+
+5. IP duplicate fragment chaff with bad options:
+
+	ip_frag 8
+	ip_chaff opt
+	order random
+
+6. either TCP or IP chaffing with short TTLs (that expire before
+   reaching the end host, but pass by the monitor):
+
+	ip_frag 8
+	ip_ttl 11
+	ip_chaff 10
+	order random
+
+	tcp_seg 1
+	ip_ttl 11
+	tcp_chaff 10
+	order random
+
+there are probably timing attacks against snort's reassembly possible
+as well, but i haven't played with it enough to see.
+

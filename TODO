@@ -1,0 +1,32 @@
+make sure chaff and other random pkts bear decent TCP flags, ICMP
+type/code, etc.
+
+force arp for dst on startup
+
+rewrite <src-hex> <dst-hex>
+
+more print options - hex|snort|tcpdump
+
+transparent relay to fragproxy
+
+hrr, only OpenBSD ships with a tunnel driver by default. for the others:
+
+Solaris Universal TUN/TAP driver:
+    http://vtun.sourceforge.net/tun/
+    must be built with native Sun cc -xtarget=ultra -xarch=v9
+    pre-built binary: ftp://ftp.monkey.org/pub/users/dugsong/tun-1.1-suncc.tgz
+
+Linux ethertap:
+
+    # /dev/MAKEDEV tap
+    insmod ethertap
+
+Linux Universal TUN/TAP driver:
+    
+    modload tun
+    (see linux/Documentation/networking/tuntap.txt initialization)
+
+Linux userlink driver:
+
+http://ftp.debian.org/debian/dists/potato/main/source/admin/userlink_0.99a.orig.tar.gz
+

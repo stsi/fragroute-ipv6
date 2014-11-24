@@ -1,0 +1,200 @@
+.\"
+.\" Copyright (c) 2001 Dug Song <dugsong@monkey.org>
+.\"
+.\" $Id: fragroute.8.in,v 1.5 2002/04/15 14:18:42 dugsong Exp $
+.\"
+.TH FRAGROUTE 8
+.SH NAME
+fragroute \- intercept, modify, and rewrite egress traffic
+.SH SYNOPSIS
+\fBfragroute\fR [\fB-f \fIfile\fR] [\fB-D \fIdst MAC\fR]\fIhost\fR
+.SH DESCRIPTION
+.B fragroute
+intercepts, modifies, and rewrites egress traffic destined for the
+specified 
+.IR host ,
+implementing most of the attacks described in the Secure Networks
+``Insertion, Evasion, and Denial of Service: Eluding Network Intrusion
+Detection'' paper of January 1998.
+.LP
+.B fragroute
+supports both
+.IR IPv4
+and
+.IR IPv6 .
+.LP
+The options are as follows:
+.IP "\fB-f \fIfile\fR"
+Read ruleset from the specified 
+.I file
+instead of 
+.IR @FRAGROUTE_CONF@ .
+.IP "\fB-D \fIdst MAC\fR"
+Destination MAC - required for IPv6 traffic.
+.LP
+Unlike
+.BR fragrouter (8),
+this program only affects packets originating from the local machine
+destined for a remote
+.IR host .
+Do not enable IP forwarding on the local machine.
+.SH RULESET
+.B fragroute
+is composed of several modules which enable various configuration
+directives. Each directive operates on a logical packet queue handed
+to it by the previous rule.
+.TP
+.BI # " string ..."
+Ruleset comment, no-op.
+.TP
+.BR "delay first" | last | random " " \fIms\fR
+Delay the delivery of the first, last, or a randomly selected packet
+from the queue by 
+.I ms
+milliseconds.
+.TP
+.BR "drop first" | last | random " " \fIprob-%\fR
+Drop the first, last, or a randomly selected packet from the queue
+with a probability of
+.I prob-%
+percent.
+.TP
+.BR "dup first" | last | random " " \fIprob-%\fR
+Duplicate the first, last, or a randomly selected packet from the
+queue with a probability of
+.I prob-%
+percent.
+.TP
+.BI echo " string ..."
+Echo the 
+.I string
+argument(s) to standard output.
+.TP
+.BR "ip_chaff dup" | opt | \fIttl\fR
+Interleave IP packets in the queue with duplicate IP packets
+containing different payloads, either scheduled for later delivery,
+carrying invalid IP options, or bearing short time-to-live values.
+.TP
+.BR "ip_frag " \fIsize\fR " " [ old | new ]
+Fragment each packet in the queue into 
+.IR size -byte
+IP fragments, preserving the complete transport header in the first
+fragment. Optional fragment overlap may be specified as
+.BR old " or " new ,
+to favor newer or older data.
+.TP
+.BR "ip_opt lsrr" | "ssrr " "\fIptr ip-addr ...\fR"
+Add IP options to every packet, to enable loose or strict source
+routing. The route should be specified as list of IP addresses, and a
+bytewise pointer into them (e.g. the minimum \fIptr\fR value is 4).
+.TP
+.BI "ip_ttl " ttl
+Set the IP time-to-live value of every packet to
+.IR ttl .
+.TP
+.BI "ip_tos " tos
+Set the IP type-of-service bits for every packet to
+.IR tos .
+.TP
+.BR "ip6_qos " "\fItc fl\fR"
+Set the IPv6 quality-of-service traffic class and flow label to 
+.IR tc
+and
+.IR fl .
+.TP
+.BR "ip6_opt route \fIsegments ip6-addr ...\fR" | "raw \fItype byte stream\fR"
+Add IPv6 routing options, or raw options as hex bytes (space-delimited).
+.TP
+.BR order " " random | reverse
+Re-order the packets in the queue randomly, or in reverse.
+.TP
+.BR print
+Print each packet in the queue in tcpdump-style format.
+.TP
+.BR tcp_chaff " " cksum | null | paws | rexmit | seq | syn | \fIttl\fR
+Interleave TCP segments in the queue with duplicate TCP segments
+containing different payloads, either bearing invalid TCP checksums,
+null TCP control flags, older TCP timestamp options for PAWS
+elimination, faked retransmits scheduled for later delivery,
+out-of-window sequence numbers, requests to re-synchronize sequence
+numbers mid-stream, or short time-to-live values.
+.TP
+.BR tcp_opt " " mss | wscale "\fI size\fR"
+Add TCP options to every TCP packet, to set the maximum segment size
+or window scaling factor.
+.TP
+.BR "tcp_seg " \fIsize\fR " " [ old | new ]
+Segment each TCP data segment in the queue into
+.IR size -byte
+TCP segments. Optional segment overlap may be specified as
+.BR old " or " new ,
+to favor newer or older data.
+.TP
+.BI label " name"
+Create label 
+.IR name . 
+Can be used by
+.BR jump
+directive.
+.TP
+.BI break
+Stop execution.
+.TP
+.BR "jump " \fIlabel\fR " " [ if | unless ] " \fIfilter\fR"
+Jump to 
+.IR label  
+.BR if
+or 
+.BR unless 
+first packet matches 
+.BR tcpdump (8)
+.IR filter .
+.SH EXAMPLES
+Fragment all traffic to a Windows host into forward-overlapping 8-byte
+fragments (favoring older data), reorder randomly, and print to
+standard output:
+.LP
+.nf
+	ip_frag 8 old
+	order random
+	print
+.fi
+.LP
+Segment all TCP data to a host into forward-overlapping 4-byte
+segments (favoring newer data), interleave with overwriting, random
+chaff segments bearing older timestamp options for PAWS elimination,
+reorder randomly, and print to standard output:
+.LP
+.nf
+	tcp_seg 4 new
+	tcp_chaff paws
+	order random
+	print
+.fi
+.LP
+Duplicate non-ssh traffic:
+.LP
+.nf
+	echo "New packet"
+	
+	jump SSH if port 22
+	echo "Non-SSH traffic:"
+	dup first 100
+	print
+	break
+	
+	label SSH
+	echo "SSH traffic (skip):"
+	print
+.fi
+.SH FILES
+.TP
+.I @FRAGROUTE_CONF@
+Default configuration ruleset
+.SH "SEE ALSO"
+.BR fragtest (8)
+.SH AUTHORS
+Dug Song <dugsong@monkey.org>, Stas Grabois <finpushack@gmail.com>
+.SH BUGS
+It is entirely possible to mangle your outgoing traffic so badly that
+no remote TCP/IP stack will accept it. K.I.S.S.
