@@ -1,0 +1,9 @@
+*.o
+Makefile
+config.h
+config.log
+config.status
+fragroute
+fragroute.8
+fragtest
+stamp-h1

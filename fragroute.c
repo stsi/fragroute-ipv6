@@ -269,6 +269,15 @@ static void probe_host(struct options *options)
 }
 #endif
 
+#ifdef __linux__
+void remove_prev_route(struct options *options)
+{
+	char command[1024];
+	sprintf(command, "ip route del %s >/dev/null 2>&1", options->dst);
+	system(command);
+}
+#endif
+
 static void
 fragroute_init(struct options *options)
 {
@@ -323,6 +332,12 @@ fragroute_init(struct options *options)
 	ctx.mtu = ifent.intf_mtu;
 
 	ctx.eth_type = ctx.dst.addr_type == ADDR_TYPE_IP6 ? ETH_TYPE_IPV6 : ETH_TYPE_IP;
+
+#ifdef __linux__
+	if (!options->dst_mac) {
+		remove_prev_route(options);
+	}
+#endif
 
 	/* Open outgoing interface for sending. */
 	if ((ctx.eth = eth_open(ifent.intf_name)) == NULL)

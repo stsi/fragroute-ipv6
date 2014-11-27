@@ -136,6 +136,10 @@ ip_frag_apply_ipv4(void *d, struct pktq *pktq)
 		
 		if (pkt->pkt_end - pkt->pkt_ip_data < fraglen)
 			continue;
+
+		while (!pkt->pkt_ip->ip_id) {
+			pkt->pkt_ip->ip_id = rand_uint16(ip_frag_data.rnd);
+		}
 		
 		for (p = pkt->pkt_ip_data; p < pkt->pkt_end; ) {
 			new = pkt_new();

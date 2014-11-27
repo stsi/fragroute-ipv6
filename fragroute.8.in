@@ -7,7 +7,7 @@
 .SH NAME
 fragroute \- intercept, modify, and rewrite egress traffic
 .SH SYNOPSIS
-\fBfragroute\fR [\fB-f \fIfile\fR] [\fB-D \fIdst MAC\fR]\fIhost\fR
+\fBfragroute\fR [\fB-f \fIfile\fR] [\fB-D \fIdst MAC\fR] \fIhost\fR
 .SH DESCRIPTION
 .B fragroute
 intercepts, modifies, and rewrites egress traffic destined for the
