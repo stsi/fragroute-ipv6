@@ -7,7 +7,7 @@ fragroute-ipv6 does the same for ipv6 traffic.
 
 ## required libraries / drivers
 
-- [libdnet](https://github.com/stsi/libdnet-ipv6)
+- [libdnet](https://github.com/stsi/libdnet-ipv6); *UPDATE* New libdnet (https://github.com/ofalk/libdnet) is supported -- apply libdnet-ng-ipv6.patch patch
 - [libpcap](http://www.tcpdump.org/)
 - [libevent](http://www.monkey.org/~provos/libevent/) (for non-Win2k only) 
 - [TUN/TAP](http://vtun.sourceforge.net/tun/) (for Solaris only) 
@@ -23,6 +23,7 @@ Original code - built and tested on OpenBSD, FreeBSD, Linux, Solaris, and Window
 
 ## News
 
+- 2020-08-04 - Added IPv6 patch for https://github.com/ofalk/libdnet
 - 2014-11-14 - Moved to GitHub
 - 2012-12-06 - Added version 1.2.6 - support automake>1.9 and use shared libraries. 
 - 2012-06-06 - Added version 1.2.5 - added script flow control - 'label', 'jump' and 'break' commands. 
