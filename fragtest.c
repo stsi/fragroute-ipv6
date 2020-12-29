@@ -161,7 +161,7 @@ test_ping(void)
 	pkt->pkt_ip->ip_id = rand_uint16(ctx.rnd);
 	ip_checksum(pkt->pkt_ip, pkt->pkt_end - pkt->pkt_eth_data);
 	
-	pcap_filter(ctx.pcap, "icmp[0] = 0 and src %s and dst %s",
+	fr_pcap_filter(ctx.pcap, "icmp[0] = 0 and src %s and dst %s",
 	    addr_ntoa(&ctx.dst), addr_ntoa(&ctx.src));
 
 	send_pkt(pkt);
@@ -227,7 +227,7 @@ test_ip_opt(void)
 	opts[max].opt_data.rr.iplist[0] = ping->pkt_ip->ip_src;
 	max++;
 	
-	pcap_filter(ctx.pcap, "icmp and src %s and dst %s",
+	fr_pcap_filter(ctx.pcap, "icmp and src %s and dst %s",
 	    addr_ntoa(&ctx.dst), addr_ntoa(&ctx.src));
 
 	ping->pkt_icmp_msg->echo.icmp_id = rand_uint16(ctx.rnd);
@@ -276,7 +276,7 @@ test_ip_tracert(void)
 
 	printf("ip-tracert: "); fflush(stdout);
 
-	pcap_filter(ctx.pcap, "icmp[0] = 0 and src %s and dst %s",
+	fr_pcap_filter(ctx.pcap, "icmp[0] = 0 and src %s and dst %s",
 	    addr_ntoa(&ctx.dst), addr_ntoa(&ctx.src));
 	
 	ping->pkt_icmp_msg->echo.icmp_id = rand_uint16(ctx.rnd);
@@ -299,7 +299,7 @@ test_ip_tracert(void)
 		max_ttl = IP_TTL_DEFAULT;
 
 	printf("%s, %d hops max\n", ip_ntoa(&ping->pkt_ip->ip_dst), max_ttl);
-	pcap_filter(ctx.pcap, "icmp and dst %s", addr_ntoa(&ctx.src));
+	fr_pcap_filter(ctx.pcap, "icmp and dst %s", addr_ntoa(&ctx.src));
 
 	for (i = 1; i < max_ttl + 1; i++) {
 		pkt = pkt_dup(ping);
@@ -385,7 +385,7 @@ test_frag(char *overlap, int drop)
 		pkt_free(pkt);
 		save_tv.tv_sec = FRAG_TIMEOUT;
 	}
-	pcap_filter(ctx.pcap, "icmp[0] = %d and src %s and dst %s",
+	fr_pcap_filter(ctx.pcap, "icmp[0] = %d and src %s and dst %s",
 	    drop ? 11 : 0, addr_ntoa(&ctx.dst), addr_ntoa(&ctx.src));
 
 	send_pktq(&ctx.pktq);
@@ -458,10 +458,10 @@ main(int argc, char *argv[])
 	if ((ctx.ip = ip_open()) == NULL)
 		err(1, "couldn't open raw IP interface");
 
-	if ((ctx.pcap = pcap_open(ifent.intf_name)) == NULL)
+	if ((ctx.pcap = fr_pcap_open(ifent.intf_name)) == NULL)
 		err(1, "couldn't open %s for sniffing", ifent.intf_name);
 	
-	if ((ctx.dloff = pcap_dloff(ctx.pcap)) < 0)
+	if ((ctx.dloff = fr_pcap_dloff(ctx.pcap)) < 0)
 		err(1, "couldn't determine link layer offset");
 	
 	ctx.rnd = rand_open();

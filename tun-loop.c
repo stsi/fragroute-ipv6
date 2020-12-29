@@ -331,13 +331,13 @@ tun_open(struct addr *src, struct addr *dst, int mtu)
 		return (tun_close(tun));
 	
 	/* Set up to sniff on loopback. */
-	if ((tun->pcap = pcap_open(tun->ifent->intf_name)) == NULL)
+	if ((tun->pcap = fr_pcap_open(tun->ifent->intf_name)) == NULL)
 		return (tun_close(tun));
 	
-	if (pcap_filter(tun->pcap, "ip dst %s", addr_ntoa(dst)) < 0)
+	if (fr_pcap_filter(tun->pcap, "ip dst %s", addr_ntoa(dst)) < 0)
 		return (tun_close(tun));
 	
-	tun->dloff = pcap_dloff(tun->pcap);
+	tun->dloff = fr_pcap_dloff(tun->pcap);
 	tun->fd = pcap_fileno(tun->pcap);
 	
 	return (tun);

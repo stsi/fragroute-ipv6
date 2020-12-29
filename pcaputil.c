@@ -27,7 +27,7 @@
 #include "pcaputil.h"
 
 pcap_t *
-pcap_open(char *device)
+fr_pcap_open(char *device)
 {
 	char ebuf[PCAP_ERRBUF_SIZE];
 	pcap_t *pcap;
@@ -53,7 +53,7 @@ pcap_open(char *device)
 }
 
 int
-pcap_dloff(pcap_t *pd)
+fr_pcap_dloff(pcap_t *pd)
 {
 	int i;
 
@@ -83,7 +83,7 @@ pcap_dloff(pcap_t *pd)
 }
 
 int
-pcap_filter(pcap_t *pcap, const char *fmt, ...)
+fr_pcap_filter(pcap_t *pcap, const char *fmt, ...)
 {
 	struct bpf_program fcode;
 	char buf[BUFSIZ];

@@ -9,8 +9,8 @@
 #ifndef PCAPUTIL_H
 #define PCAPUTIL_H
 
-pcap_t *pcap_open(char *device);
-int	pcap_dloff(pcap_t *pcap);
-int	pcap_filter(pcap_t *pcap, const char *fmt, ...);
+pcap_t *fr_pcap_open(char *device);
+int	fr_pcap_dloff(pcap_t *pcap);
+int	fr_pcap_filter(pcap_t *pcap, const char *fmt, ...);
 
 #endif /* PCAPUTIL_H */
